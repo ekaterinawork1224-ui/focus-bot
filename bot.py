@@ -299,7 +299,7 @@ async def plan_next(callback: types.CallbackQuery):
 async def scheduler():
     schedule.every().day.at("08:00").do(morning_message)
     schedule.every().day.at("14:00").do(daytime_reminder)
-    schedule.every().day.at("22:13").do(evening_checkin)
+    schedule.every().day.at("22:30").do(evening_checkin)
 
     while True:
         await schedule.run_pending()
