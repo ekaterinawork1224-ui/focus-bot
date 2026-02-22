@@ -1,4 +1,4 @@
-from aiogram import Bot, Dispatcher, executor, types
+from aiogram import Bot, Dispatcher, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import sqlite3
 from datetime import date, timedelta
@@ -304,9 +304,10 @@ async def scheduler():
         await schedule.run_pending()
         await asyncio.sleep(60)
 
-async def on_startup(dp):
+async def main():
     asyncio.create_task(scheduler())
-print("Бот запущен 🤍")
+    print("Бот запущен 🤍")
+    await dp.start_polling(bot)
 
 if __name__ == "__main__":
-    executor.start_polling(dp, on_startup=on_startup)
+    asyncio.run(main())
