@@ -312,3 +312,13 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+import threading
+from http.server import SimpleHTTPRequestHandler
+from socketserver import TCPServer
+
+def run_server():
+    port = int(os.environ.get("PORT", 10000))
+    with TCPServer(("", port), SimpleHTTPRequestHandler) as httpd:
+        httpd.serve_forever()
+
+threading.Thread(target=run_server).start()
