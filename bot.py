@@ -4,8 +4,9 @@ import sqlite3
 from datetime import date, timedelta
 import asyncio
 import aioschedule as schedule
+import os
 
-TOKEN = "8518435616:AAElInJHuK4AwF41G1G93kVs0ainvSGAVrg"
+TOKEN = os.getenv("BOT_TOKEN")
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
