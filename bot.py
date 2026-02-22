@@ -309,9 +309,6 @@ async def main():
     asyncio.create_task(scheduler())
     print("Бот запущен 🤍")
     await dp.start_polling(bot)
-
-if __name__ == "__main__":
-    asyncio.run(main())
 import threading
 from http.server import SimpleHTTPRequestHandler
 from socketserver import TCPServer
@@ -321,4 +318,7 @@ def run_server():
     with TCPServer(("", port), SimpleHTTPRequestHandler) as httpd:
         httpd.serve_forever()
 
-threading.Thread(target=run_server).start()
+threading.Thread(target=run_server, daemon=True).start()
+
+if __name__ == "__main__":
+    asyncio.run(main())
