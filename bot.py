@@ -1,10 +1,11 @@
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import sqlite3
-from datetime import date, timedelta
 import asyncio
 import aioschedule as schedule
 import os
+import pytz
+from datetime import datetime
 
 TOKEN = os.getenv("BOT_TOKEN")
 
@@ -297,28 +298,23 @@ async def plan_next(callback: types.CallbackQuery):
 
 # ===== ПЛАНИРОВЩИК =====
 async def scheduler():
-    schedule.every().day.at("08:00").do(morning_message)
-    schedule.every().day.at("14:00").do(daytime_reminder)
-    schedule.every().day.at("22:30").do(evening_checkin)
+    tz = pytz.timezone("Asia/Almaty")
+
+    async def safe_job(job_func):
+        await job_func()
+
+    schedule.every().day.at("08:00", tz=tz).do(safe_job, morning_message)
+    schedule.every().day.at("14:00", tz=tz).do(safe_job, daytime_reminder)
+    schedule.every().day.at("22:00", tz=tz).do(safe_job, evening_checkin)
 
     while True:
         await schedule.run_pending()
-        await asyncio.sleep(60)
+        await asyncio.sleep(30)
 
 async def main():
     asyncio.create_task(scheduler())
     print("Бот запущен 🤍")
     await dp.start_polling(bot)
-import threading
-from http.server import SimpleHTTPRequestHandler
-from socketserver import TCPServer
-
-def run_server():
-    port = int(os.environ.get("PORT", 10000))
-    with TCPServer(("", port), SimpleHTTPRequestHandler) as httpd:
-        httpd.serve_forever()
-
-threading.Thread(target=run_server, daemon=True).start()
 
 if __name__ == "__main__":
     asyncio.run(main())
