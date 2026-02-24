@@ -4,8 +4,6 @@ import sqlite3
 import asyncio
 import aioschedule as schedule
 import os
-import pytz
-from datetime import datetime
 
 TOKEN = os.getenv("BOT_TOKEN")
 
@@ -298,14 +296,9 @@ async def plan_next(callback: types.CallbackQuery):
 
 # ===== ПЛАНИРОВЩИК =====
 async def scheduler():
-    tz = pytz.timezone("Asia/Almaty")
-
-    async def safe_job(job_func):
-        await job_func()
-
-    schedule.every().day.at("08:00", tz=tz).do(safe_job, morning_message)
-    schedule.every().day.at("14:00", tz=tz).do(safe_job, daytime_reminder)
-    schedule.every().day.at("22:00", tz=tz).do(safe_job, evening_checkin)
+    schedule.every().day.at("03:00").do(morning_message)
+    schedule.every().day.at("09:00").do(daytime_reminder)
+    schedule.every().day.at("16:00").do(evening_checkin)
 
     while True:
         await schedule.run_pending()
