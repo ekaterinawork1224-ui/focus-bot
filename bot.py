@@ -295,15 +295,17 @@ async def plan_next(callback: types.CallbackQuery):
     await callback.answer()
 
 # ===== ПЛАНИРОВЩИК =====
+async def safe_job(job):
+    asyncio.create_task(job())
+
 async def scheduler():
-    schedule.every().day.at("03:00").do(morning_message)
-    schedule.every().day.at("09:00").do(daytime_reminder)
-    schedule.every().day.at("16:00").do(evening_checkin)
+    schedule.every().day.at("08:00").do(lambda: asyncio.create_task(morning_message()))
+    schedule.every().day.at("14:00").do(lambda: asyncio.create_task(daytime_reminder()))
+    schedule.every().day.at("22:00").do(lambda: asyncio.create_task(evening_checkin()))
 
     while True:
         await schedule.run_pending()
-        await asyncio.sleep(30)
-
+        await asyncio.sleep(1)
 async def main():
     asyncio.create_task(scheduler())
     print("Бот запущен 🤍")
