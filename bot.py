@@ -29,7 +29,9 @@ async def start_command(message: types.Message):
         "днём мягко верну к фокусу,\n"
         "вечером подведём итоги и спланируем завтра ✨"
     )
-
+@dp.message_handler(commands=["plan"])
+async def plan_command(message: types.Message):
+    await start_planning(message.from_user.id)
 # ===== БАЗА =====
 db = sqlite3.connect("focus.db")
 cur = db.cursor()
@@ -310,9 +312,9 @@ async def safe_job(job):
     asyncio.create_task(job())
 
 async def scheduler():
-    schedule.every().day.at("17:00").do(lambda: asyncio.create_task(morning_message()))
+    schedule.every().day.at("08:00").do(lambda: asyncio.create_task(morning_message()))
     schedule.every().day.at("14:00").do(lambda: asyncio.create_task(daytime_reminder()))
-    schedule.every().day.at("22:00").do(lambda: asyncio.create_task(evening_checkin()))
+    schedule.every().day.at("21:00").do(lambda: asyncio.create_task(evening_checkin()))
 
     while True:
         await schedule.run_pending()
