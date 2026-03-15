@@ -1,9 +1,20 @@
+import socket
+
+# --- ФИКС ДЛЯ RAILWAY (ПРИНУДИТЕЛЬНЫЙ IPv4) ---
+old_getaddrinfo = socket.getaddrinfo
+def new_getaddrinfo(*args, **kwargs):
+    responses = old_getaddrinfo(*args, **kwargs)
+    return[response for response in responses if response[0] == socket.AF_INET]
+socket.getaddrinfo = new_getaddrinfo
+# ----------------------------------------------
+
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import sqlite3
 import asyncio
 import aioschedule as schedule
 import os
+from datetime import date, timedelta
 
 TOKEN = os.getenv("BOT_TOKEN")
 
@@ -299,7 +310,7 @@ async def safe_job(job):
     asyncio.create_task(job())
 
 async def scheduler():
-    schedule.every().day.at("08:00").do(lambda: asyncio.create_task(morning_message()))
+    schedule.every().day.at("17:00").do(lambda: asyncio.create_task(morning_message()))
     schedule.every().day.at("14:00").do(lambda: asyncio.create_task(daytime_reminder()))
     schedule.every().day.at("22:00").do(lambda: asyncio.create_task(evening_checkin()))
 
