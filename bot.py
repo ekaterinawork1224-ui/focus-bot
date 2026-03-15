@@ -33,7 +33,7 @@ async def start_command(message: types.Message):
 async def plan_command(message: types.Message):
     await start_planning(message.from_user.id)
 # ===== БАЗА =====
-db = sqlite3.connect("focus.db", check_same_thread=False)
+db = sqlite3.connect("focus2.db", check_same_thread=False)
 cur = db.cursor()
 
 cur.execute("""
